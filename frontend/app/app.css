@@ -32,6 +32,10 @@ td {
     padding: 5px;
 }
 
+.comment {
+    margin-left: 15px;
+}
+
 /* =============
    Header
    ============= */

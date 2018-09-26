@@ -26,7 +26,6 @@ angular.module('feedbackApp.addFeedback', ['ngRoute'])
       statement: $scope.form.statement,
       user: $window.localStorage.getItem('user'),
     };
-    console.log($scope.form);
     $http.post('http://127.0.0.1:8001/feedback/post', data, {}).then((response) => {
       $scope.status = 'Success!';
     }, (response) => {

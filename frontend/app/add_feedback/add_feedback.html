@@ -15,7 +15,7 @@
         <td><textarea id="statement" ng-model="form.statement" style="height: 300px; width: 300px;"></textarea></td>
       </tr>
       <tr>
-        <td><input type="submit" ng-disabled="buttonDisabled" value="Submit!" /></td>
+        <td><input type="submit" ng-disabled="buttonDisabled || comment.reply.text === ''" value="Submit!" /></td>
         <td>{{ status }}</td>
       </tr>
     </table>

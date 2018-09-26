@@ -1,15 +1,38 @@
-<div ng-controller="commentsController">
-  <h2>Comments on {{ feedback.user }}'s feedback</h2>
+<script type="text/ng-template" id="replyTemplate">
+    <a ng-if="loggedIn" href="javascript:void(0);" ng-click="comment.reply.show = !comment.reply.show">Reply</a>
 
-  <section class="feedback" ng-repeat="message in comments">
+    <div ng-if="loggedIn && comment.reply.show">
+      <form ng-submit="submit(comment)">
+        <textarea ng-model="comment.reply.text"></textarea><br />
+        <input type="submit" value="Submit!" ng-disabled="comment.reply.buttonDisabled || comment.reply.text === ''" /> {{ comment.reply.status }}
+      </form>
+    </div>
+</script>
+
+<script type="text/ng-template" id="commentTemplate">
+  <section class="comment">
     <h3>
-      {{ message.user }}'s comment
+      {{ comment.user }}'s comment
     </h3>
-    <h4>Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }}</h4>
+    <h4>Votes: {{ comment.votes }} pt{{ (comment.votes === 1 || comment.votes === -1) ? '' : 's' }}</h4>
     <p>
-      {{ message.statement }}
+      {{ comment.statement }}
     </p>
+
+    <div ng-include="'replyTemplate'"></div>
+
+    <div ng-repeat="comment in comment.comments" ng-include="'commentTemplate'">
+    </div>
 
     <hr />
   </section>
+</script>
+
+<div ng-controller="commentsController">
+  <h2>Comments on {{ feedback.user }}'s feedback</h2>
+
+  <div ng-include="'replyTemplate'"></div>
+
+  <div ng-repeat="comment in comments" ng-include="'commentTemplate'">
+  </div>
 </div>
