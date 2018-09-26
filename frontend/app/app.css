@@ -1,0 +1,117 @@
+body {
+    background: #F6F0ED;
+    color: #202628;
+
+    font-family: Verdana, Geneva, sans-serif;
+}
+
+header, footer {
+    background: #89C192;
+
+    padding: 8px 10%;
+}
+
+.content {
+    padding: 0 10%;
+}
+
+.content section p {
+    text-align: justify;
+}
+
+a {
+    color: #28536B;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #346f8E;
+}
+
+/* =============
+   Header
+   ============= */
+
+header {
+    height: 40px;
+}
+
+header div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+header div nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+header div nav ul {
+    margin: 0;
+}
+
+header div nav ul li {
+    list-style-type: none;
+    padding: 0;
+    float: left;
+}
+
+header div nav a {
+    margin-left: 12px;
+}
+
+header div h1 {
+    font-size: 32px;
+    margin: 0;
+
+    font-family: "Lucida Console", Monaco, monospace;
+}
+
+
+/* =============
+   Media queries
+   ============= */
+
+   @media only screen and (max-width: 1200px) {
+       .content {
+           padding: 0 5%;
+       }
+
+        header, footer {
+            background: #89C192;
+
+            padding: 8px 5%;
+        }
+   }
+
+/* =============
+   Flexbox
+   ============= */
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+body header {
+    flex: 0 1 auto;
+}
+
+body .content {
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+body footer {
+    flex: 0 1 auto;
+}

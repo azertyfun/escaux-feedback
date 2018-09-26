@@ -1,0 +1,21 @@
+<div ng-controller="homeController">
+  <h2>Feedback</h2>
+
+  <section class="feedback" ng-repeat="message in feedback">
+    <h3>
+      <img src="images/star_full.png" height="24"/>
+      <img src="images/star_{{ message.score > 1 ? 'full' : 'empty' }}.png" height="24"/>
+      <img src="images/star_{{ message.score > 2 ? 'full' : 'empty' }}.png" height="24"/>
+      <img src="images/star_{{ message.score > 3 ? 'full' : 'empty' }}.png" height="24"/>
+      <img src="images/star_{{ message.score > 4 ? 'full' : 'empty' }}.png" alt="{{ message.score }}/5 stars" height="24"/>
+      
+      {{ message.user }}'s feedback
+    </h3>
+    <h4>Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }}</h4>
+    <p>
+      {{ message.statement }}
+    </p>
+
+    <hr />
+  </section>
+</div>

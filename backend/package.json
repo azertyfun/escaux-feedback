@@ -1,0 +1,17 @@
+{
+  "name": "feedback-backend",
+  "version": "1.0.0",
+  "description": "Backend for a minimum viable product providing feedback for a website",
+  "main": "backend.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --inspect backend.js"
+  },
+  "author": "Monfils Nathan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "sqlite3": "^4.0.2"
+  }
+}
