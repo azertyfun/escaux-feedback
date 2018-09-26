@@ -7,21 +7,11 @@ angular.module('feedbackApp.home', ['ngRoute'])
     controller: 'homeController'
   });
 }])
-.controller('homeController', function($scope) {
-  $scope.feedback = [
-    {
-      "user": "nathan",
-      "statement": "Great app!",
-      "score": 5,
-      "status": 0,
-      "votes": -1
-    },
-    {
-      "user": "nathan",
-      "statement": "eh",
-      "score": 3,
-      "status": 0,
-      "votes": 0
-    }
-  ]
+.controller('homeController', function($scope, $http) {
+  $scope.feedback = [];
+  $http.get('http://127.0.0.1:8001/feedback').then((response) => {
+    $scope.feedback = response.data.feedback
+  }, (response) => {
+    console.error(`Could not fetch /feedback: ${response}`);
+  });
 });
