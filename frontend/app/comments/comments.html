@@ -14,7 +14,7 @@
     <h3>
       {{ comment.user }}'s comment
     </h3>
-    <h4>Votes: {{ comment.votes }} pt{{ (comment.votes === 1 || comment.votes === -1) ? '' : 's' }}</h4>
+    <h4>Votes: {{ comment.votes }} pt{{ (comment.votes === 1 || comment.votes === -1) ? '' : 's' }} <span ng-if="loggedIn">(<a href="javascript:void(0)" ng-click="vote(comment, 1)">+1</a> - <a href="javascript:void(comment, 0)" ng-click="vote(comment, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(comment, -1)">-1</a>) {{ comment.vote.status }}</span></h4>
     <p>
       {{ comment.statement }}
     </p>

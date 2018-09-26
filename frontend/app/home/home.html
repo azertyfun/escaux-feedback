@@ -11,7 +11,7 @@
       
       {{ message.user }}'s feedback
     </h3>
-    <h4>Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }}</h4>
+    <h4>Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }} <span ng-if="loggedIn">(<a href="javascript:void(0)" ng-click="vote(message, 1)">+1</a> - <a href="javascript:void(message, 0)" ng-click="vote(message, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(message, -1)">-1</a>) {{ message.vote.status }}</span></h4>
     <p>
       {{ message.statement }}
     </p>
