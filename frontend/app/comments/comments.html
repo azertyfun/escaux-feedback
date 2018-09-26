@@ -29,7 +29,17 @@
 </script>
 
 <div ng-controller="commentsController">
-  <h2>Comments on {{ feedback.user }}'s feedback</h2>
+  <h3>
+    <img src="images/star_full.png" height="24"/>
+    <img src="images/star_{{ feedback.score > 1 ? 'full' : 'empty' }}.png" height="24"/>
+    <img src="images/star_{{ feedback.score > 2 ? 'full' : 'empty' }}.png" height="24"/>
+    <img src="images/star_{{ feedback.score > 3 ? 'full' : 'empty' }}.png" height="24"/>
+    <img src="images/star_{{ feedback.score > 4 ? 'full' : 'empty' }}.png" alt="{{ feedback.score }}/5 stars" height="24"/>
+    
+    {{ feedback.user }}'s feedback
+  </h3>
+
+  {{ feedback.statement }}
 
   <div ng-include="'replyTemplate'"></div>
 

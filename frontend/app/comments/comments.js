@@ -9,16 +9,23 @@ angular.module('feedbackApp.comments', ['ngRoute'])
 }])
 .controller('commentsController', function($scope, $http, $location, $window) {
   $scope.comments = [];
+  $scope.feedback = {};
   $scope.loggedIn = window.localStorage.getItem('user') !== undefined;
 
   let id = $location.search().id;
+
+  $http.get(`http://127.0.0.1:8001/feedback/${id}`).then((response) => {
+    $scope.feedback = response.data;
+  }, (response) => {
+    console.error(`Could not fetch /feedback/${id}: ${response}`);
+  });
 
   $http.get(`http://127.0.0.1:8001/feedback/${id}/comments`).then((response) => {
     $scope.comment = {
       id: id
     };
-    $scope.comments = response.data.comments
-    $scope.comments.forEach(comment => {
+    $scope.comments = response.data.comments;
+    let addFields = (comment) => {
       comment.reply = {
         show: false,
         text: '',
@@ -28,6 +35,13 @@ angular.module('feedbackApp.comments', ['ngRoute'])
       comment.vote = {
         status: ''
       };
+
+      comment.comments.forEach(c => {
+        addFields(c);
+      })
+    };
+    $scope.comments.forEach(comment => {
+      addFields(comment);
     });
   }, (response) => {
     console.error(`Could not fetch /feedback/${id}/comments: ${response}`);
