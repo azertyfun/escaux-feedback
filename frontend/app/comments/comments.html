@@ -1,0 +1,15 @@
+<div ng-controller="commentsController">
+  <h2>Comments on {{ feedback.user }}'s feedback</h2>
+
+  <section class="feedback" ng-repeat="message in comments">
+    <h3>
+      {{ message.user }}'s comment
+    </h3>
+    <h4>Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }}</h4>
+    <p>
+      {{ message.statement }}
+    </p>
+
+    <hr />
+  </section>
+</div>
