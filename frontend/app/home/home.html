@@ -1,3 +1,18 @@
+<script type="text/ng-template" id="statusDialogTemplate">
+  <div id="statusDialog">
+    <form ng-submit="setStatus(message)">
+      <select ng-model="message.newStatus.value">
+        <option value="0">None</option>
+        <option value="1">Open</option>
+        <option value="2">Closed (Backlog)</option>
+        <option value="3">Closed (Solved)</option>
+        <option value="4">Closed (Rejected)</option>
+      </select>
+      <input type="submit" value="Submit!" ng-disabled="message.newStatus.buttonDisabled" />
+    </form>
+  </div>
+</script>
+
 <div ng-controller="homeController">
   <h2>Feedback</h2>
 
@@ -11,17 +26,20 @@
       <img src="images/star_{{ message.score > 3 ? 'full' : 'empty' }}.png" height="24"/>
       <img src="images/star_{{ message.score > 4 ? 'full' : 'empty' }}.png" alt="{{ message.score }}/5 stars" height="24"/>
       
-      {{ message.user }}'s feedback
+      {{ message.user }}'s feedback <span ng-if="loggedIn && productManager">(#{{ message.id }})</span>
     </h3>
-    <h4>Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }} <span ng-if="loggedIn">(<a href="javascript:void(0)" ng-click="vote(message, 1)">+1</a> - <a href="javascript:void(message, 0)" ng-click="vote(message, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(message, -1)">-1</a>) {{ message.vote.status }}</span></h4>
+    <h4>Status: {{ status(message) }} — Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }} <span ng-if="loggedIn">(<a href="javascript:void(0)" ng-click="vote(message, 1)">+1</a> - <a href="javascript:void(0)" ng-click="vote(message, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(message, -1)">-1</a>) {{ message.vote.status }}</span></h4>
     <p>
       {{ message.statement }}
     </p>
 
     <p style="font-size: 0.6em;">
-      <a href="#!/comments?id={{ message.id }}">Comments</a>
+      <a href="#!/comments?id={{ message.id }}">Comments</a> <span ng-if="loggedIn && productManager">— <a href="javascript:void(0)" ng-click="merge(message)">Merge to...</a> — <a href="javascript:void(0)" ng-click="message.statusShowDialog = !message.statusShowDialog">Edit status</a> {{ message.merge.status }} {{ message.newStatus.status }}</span>
     </p>
+
+    <div ng-if="loggedIn && productManager && message.statusShowDialog" ng-include="'statusDialogTemplate'"></div>
 
     <hr />
   </section>
+
 </div>

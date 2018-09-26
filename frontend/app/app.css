@@ -36,6 +36,10 @@ td {
     margin-left: 15px;
 }
 
+.comment.wasRoot {
+    background-color: gray;
+}
+
 /* =============
    Header
    ============= */

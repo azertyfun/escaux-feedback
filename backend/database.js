@@ -68,11 +68,15 @@ exports.db = db;
 
 // Enumerates the different kinds of supported `status` fields for a `feedback` row.
 exports.FeedbackStatus = {
-    None: 0,
-    Open: 1,
-    ClosedBacklog: 2,
-    ClosedSolved: 3,
-    ClosedRejected: 4
+    min: 0,
+    max: 4,
+    values: {
+        None: 0,
+        Open: 1,
+        ClosedBacklog: 2,
+        ClosedSolved: 3,
+        ClosedRejected: 4
+    }
 };
 
 // A `Feedback` object represents a `Feedback` row in the database.
@@ -303,4 +307,43 @@ exports.vote = (vote, callback) => {
             })
         });
     });
+};
+
+exports.merge = (orig, dest, callback) => {
+    this.get_feedback(orig, (err, origFeedback) => {
+        if (err) {
+            return callback(err.message);
+        }
+        if (origFeedback.parent !== null) {
+            return callback('Origin is a comment, not a feedback');
+        }
+        
+        this.get_feedback(dest, (err, destFeedback) => {
+            if (err) {
+                return callback(err.message);
+            }
+            if (destFeedback.parent !== null) {
+                return callback('Destination is a comment, not a feedback');
+            }
+
+            this.db.run('UPDATE feedback SET wasRoot=1, parent=? WHERE id=?', [dest, orig], (err) => {
+                err ? callback(err.message) : callback(null);
+            })
+        });
+    })
+};
+
+exports.setStatus = (id, status, callback) => {
+    this.get_feedback(id, (err, feedback) => {
+        if (err) {
+            return callback(err.message);
+        }
+        if (feedback.parent !== null) {
+            return callback(`${id} is a comment, not a feedback`);
+        }
+        
+        this.db.run('UPDATE feedback SET status=? WHERE id=?', [status, id], (err) => {
+            err ? callback(err.message) : callback(null);
+        })
+    })
 };

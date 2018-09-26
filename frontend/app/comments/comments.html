@@ -1,5 +1,5 @@
 <script type="text/ng-template" id="replyTemplate">
-    <a ng-if="loggedIn" href="javascript:void(0);" ng-click="comment.reply.show = !comment.reply.show">Reply</a>
+    <a ng-if="loggedIn" href="javascript:void(0)" ng-click="comment.reply.show = !comment.reply.show">Reply</a>
 
     <div ng-if="loggedIn && comment.reply.show">
       <form ng-submit="submit(comment)">
@@ -10,11 +10,11 @@
 </script>
 
 <script type="text/ng-template" id="commentTemplate">
-  <section class="comment">
+  <section class="comment {{ comment.wasRoot ? 'wasRoot' : '' }}">
     <h3>
-      {{ comment.user }}'s comment
+      {{ comment.user }}'s {{ comment.wasRoot ? 'similar feedback' : 'comment' }}
     </h3>
-    <h4>Votes: {{ comment.votes }} pt{{ (comment.votes === 1 || comment.votes === -1) ? '' : 's' }} <span ng-if="loggedIn">(<a href="javascript:void(0)" ng-click="vote(comment, 1)">+1</a> - <a href="javascript:void(comment, 0)" ng-click="vote(comment, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(comment, -1)">-1</a>) {{ comment.vote.status }}</span></h4>
+    <h4>Votes: {{ comment.votes }} pt{{ (comment.votes === 1 || comment.votes === -1) ? '' : 's' }} <span ng-if="loggedIn">(<a href="javascript:void(0)" ng-click="vote(comment, 1)">+1</a> - <a href="javascript:void(0)" ng-click="vote(comment, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(comment, -1)">-1</a>) {{ comment.vote.status }}</span></h4>
     <p>
       {{ comment.statement }}
     </p>

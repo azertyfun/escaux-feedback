@@ -1,3 +1,4 @@
 <div ng-controller="setUserController" style="margin-top: 20px;">
-  <label for="user">Username: </label> <input id="user" type="text" placeholder="nathan" ng-model="user" ng-change="change()" />
+  <label for="user">Username: </label> <input id="user" type="text" placeholder="nathan" ng-model="auth.user" ng-change="change()" /><br />
+  <input type="checkbox" id="productManager" ng-change="change()" ng-model="auth.productManager" /> <label for="productManager">Product Manager</label>
 </div>

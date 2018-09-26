@@ -9,8 +9,14 @@ angular.module('feedbackApp.setUser', ['ngRoute'])
 }])
 .controller('setUserController', function($scope, $window) {
     let user = $window.localStorage.getItem('user');
-    $scope.user = user === undefined ? '' : user;
+    let productManager = $window.localStorage.getItem('productManager');
+    $scope.auth = {
+        user: user === undefined ? '' : user,
+        productManager: productManager === undefined ? false : (productManager === 'true')
+    };
+
     $scope.change = () => {
-        $window.localStorage.setItem('user', $scope.user)
+        $window.localStorage.setItem('user', $scope.auth.user);
+        $window.localStorage.setItem('productManager', $scope.auth.productManager);
     };
 });
