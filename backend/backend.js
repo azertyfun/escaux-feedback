@@ -82,19 +82,13 @@ function get_feedback(id, callback) {
         if (err) {
             callback(err, null);
         } else {
-            database.get_votes(id, (err, votes) => {
-                if (err) {
-                    callback(`Could not get votes: ${err}`, null);
-                } else {
-                    callback(null, {
-                        id: feedback.id,
-                        user: feedback.user,
-                        statement: feedback.statement,
-                        score: feedback.score,
-                        status: feedback.status,
-                        votes: votes
-                    });
-                }
+            callback(null, {
+                id: feedback.id,
+                user: feedback.user,
+                statement: feedback.statement,
+                score: feedback.score,
+                status: feedback.status,
+                votes: feedback.votes
             });
         }
     });

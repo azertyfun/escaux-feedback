@@ -80,12 +80,13 @@ exports.FeedbackStatus = {
 // `score` is an integer from 1 to 5
 // `status` is an integer corresponding to one of the statuses, as defined in `this.FeedbackStatus`
 // `wasRoot` is `true` if the `Feedback` was previously a "root" feedback that was merged into a comment by a product manager
-exports.Feedback = function(id, parent, user, statement, score, status, wasRoot) {
+exports.Feedback = function(id, parent, user, statement, score, votes, status, wasRoot) {
     this.id = id;
     this.parent = parent;
     this.user = user;
     this.statement = statement;
     this.score = score;
+    this.votes = votes;
     this.status = status;
     this.wasRoot = wasRoot;
 };
@@ -136,7 +137,21 @@ exports.get_feedback_ids = (callback) => {
 
 // Returns a `this.Feedback` object or an error
 exports.get_feedback = (id, callback) => {
-    this.db.get('SELECT * FROM feedback WHERE id=?', [id], (err, row) => {
+    this.db.get(`
+                SELECT
+                    feedback.id AS id,
+                    user,
+                    statement,
+                    parent,
+                    score,
+                    IFNULL(
+                        (SELECT SUM(value) FROM votes WHERE feedback=feedback.id),
+                        0
+                    ) AS votes,
+                    status
+                FROM feedback
+                WHERE id=?`,
+            [id], (err, row) => {
         if (err) {
             console.error(err);
             return callback('Database error', null);
@@ -150,25 +165,7 @@ exports.get_feedback = (id, callback) => {
             return callback('No such feedback (is a comment)', null);
         }
 
-        callback(null, new this.Feedback(row.id, null, row.user, row.statement, row.score, row.status, false));
-    })
-};
-
-// Returns the total vote count for a feedback
-exports.get_votes = (id, callback) => {
-    this.db.all('SELECT value FROM votes WHERE feedback=?', [id], (err, rows) => {
-        if (err) {
-            console.error(err);
-            return callback('Database error', null);
-        }
-
-        let votes = 0;
-
-        rows.forEach((row) => {
-            votes += row.value;
-        });
-
-        callback(null, votes);
+        callback(null, new this.Feedback(row.id, null, row.user, row.statement, row.score, row.votes, row.status, false));
     })
 };
 
@@ -176,7 +173,19 @@ function get_comments_impl(id, callback) {
     let comments = [];
 
     let workers = 0;
-    this.db.each('SELECT id, user, statement, wasRoot FROM feedback WHERE parent=?', [id], (err, row) => {
+    this.db.each(`
+                SELECT
+                    feedback.id AS id,
+                    user,
+                    statement,
+                    IFNULL(
+                        (SELECT SUM(value) FROM votes WHERE feedback=feedback.id),
+                        0
+                    ) AS votes,
+                    wasRoot
+                FROM feedback
+                WHERE parent=?`,
+            [id], (err, row) => {
         ++workers;
 
         if (err) {
@@ -190,8 +199,10 @@ function get_comments_impl(id, callback) {
             }
 
             comments.push({
+                id: row.id,
                 user: row.user,
                 statement: row.statement,
+                votes: row.votes,
                 wasRoot: row.wasRoot,
                 comments: subComments
             });
