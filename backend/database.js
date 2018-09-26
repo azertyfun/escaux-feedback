@@ -80,7 +80,8 @@ exports.FeedbackStatus = {
 // `score` is an integer from 1 to 5
 // `status` is an integer corresponding to one of the statuses, as defined in `this.FeedbackStatus`
 // `wasRoot` is `true` if the `Feedback` was previously a "root" feedback that was merged into a comment by a product manager
-exports.Feedback = function(parent, user, statement, score, status, wasRoot) {
+exports.Feedback = function(id, parent, user, statement, score, status, wasRoot) {
+    this.id = id;
     this.parent = parent;
     this.user = user;
     this.statement = statement;
@@ -149,7 +150,7 @@ exports.get_feedback = (id, callback) => {
             return callback('No such feedback (is a comment)', null);
         }
 
-        callback(null, new this.Feedback(null, row.user, row.statement, row.score, row.status, false));
+        callback(null, new this.Feedback(row.id, null, row.user, row.statement, row.score, row.status, false));
     })
 };
 

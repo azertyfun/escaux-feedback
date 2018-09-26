@@ -87,6 +87,7 @@ function get_feedback(id, callback) {
                     callback(`Could not get votes: ${err}`, null);
                 } else {
                     callback(null, {
+                        id: feedback.id,
                         user: feedback.user,
                         statement: feedback.statement,
                         score: feedback.score,
