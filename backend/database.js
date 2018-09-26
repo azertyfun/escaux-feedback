@@ -117,6 +117,22 @@ exports.authenticate = (name, callback) => {
     });
 };
 
+exports.get_feedback_ids = (callback) => {
+    this.db.all('SELECT id FROM feedback WHERE parent IS NULL', [], (err, rows) => {
+        if (err) {
+            console.error(err);
+            return callback('Database error', null);
+        }
+
+        let ids = [];
+        rows.forEach((row) => {
+            ids.push(row.id);
+        });
+
+        callback(null, ids);
+    });
+}
+
 // Returns a `this.Feedback` object or an error
 exports.get_feedback = (id, callback) => {
     this.db.get('SELECT * FROM feedback WHERE id=?', [id], (err, row) => {

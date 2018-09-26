@@ -1,11 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
-const request_validator = require('./request-validator.js')
+const request_validator = require('./request-validator.js');
 
 const port = 8001;
 const app = express();
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+app.use(cors());
+app.options('*', cors());
 
 app.route('/rebuild-database').get((req, res) => {
     database.rebuildDatabase();
@@ -74,25 +77,16 @@ function post_feedback(req, res) {
     });
 }
 
-app.route('/feedback/post').post(post_feedback);
-app.route('/feedback/:id/post').post(post_feedback);
-
-app.route('/feedback/:id').get((req, res) => {
-    database.get_feedback(req.params['id'], (err, feedback) => {
+function get_feedback(id, callback) {
+    database.get_feedback(id, (err, feedback) => {
         if (err) {
-            res.send(400, {
-                'error': 'Could not get feedback',
-                'message': err
-            });
+            callback(err, null);
         } else {
-            database.get_votes(req.params['id'], (err, votes) => {
+            database.get_votes(id, (err, votes) => {
                 if (err) {
-                    res.send(500, {
-                        'error': 'Could not get votes',
-                        'message': err
-                    });
+                    callback(`Could not get votes: ${err}`, null);
                 } else {
-                    res.send(200, {
+                    callback(null, {
                         user: feedback.user,
                         statement: feedback.statement,
                         score: feedback.score,
@@ -103,6 +97,68 @@ app.route('/feedback/:id').get((req, res) => {
             });
         }
     });
+}
+
+app.route('/feedback/post').post(post_feedback);
+app.route('/feedback/:id/post').post(post_feedback);
+
+app.route('/feedback').get((req, res) => {
+    database.get_feedback_ids((err, ids) => {
+        if (err) {
+            res.send(400, {
+                'error': 'Could not get feedback IDs',
+                'message': err
+            });
+        } else {
+            let feedback = [];
+            let workers = 0;
+
+            let shouldBreak = false; // If we encounter an error, we send a 400 in the callback and therefore need to stop immediately!
+            ids.forEach(id => {
+                if (shouldBreak)
+                    return;
+
+                ++workers;
+                get_feedback(id, (err, f) => {
+                    if (err) {
+                        res.send(400, {
+                            'error': 'Could not get feedback',
+                            'message': err
+                        });
+                        shouldBreak = true;
+                    } else {
+                        feedback.push(f);
+                        --workers;
+                    }
+                });
+            });
+
+            // The `get_feedback` calls are done asynchronously; therefore, this callback is called before those asynchronous calls are over. The `workers` counter keeps track of how many asynchronous calls are still running; when it reachers 0, it means all asynchronous calls are over and we can call back with a complete feedback list.
+            let waitForWorkers = () => {
+                if (workers === 0) {
+                    res.send(200, {
+                        feedback: feedback
+                    });
+                } else {
+                    setTimeout(waitForWorkers, 20);
+                }
+            };
+            waitForWorkers();
+        }
+    })
+});
+
+app.route('/feedback/:id').get((req, res) => {
+    get_feedback(req.params['id'], (err, feedback) => {
+        if(err) {
+            res.send(400, {
+                error: 'Error',
+                message: err
+            });
+        } else {
+            res.send(200, feedback);
+        }
+    })
 });
 
 app.route('/feedback/:id/comments').get((req, res) => {
