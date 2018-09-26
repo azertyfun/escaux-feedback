@@ -5,6 +5,7 @@ var app = angular.module('feedbackApp', [
   'ngRoute',
   'feedbackApp.home',
   'feedbackApp.comments',
+  'feedbackApp.setUser',
 ])
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');
