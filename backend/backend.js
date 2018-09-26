@@ -13,7 +13,7 @@ app.options('*', cors());
 app.route('/rebuild-database').get((req, res) => {
     database.rebuildDatabase();
     res.send({
-        status: 'It works, baby!'
+        status: 'Database rebuilt successfully'
     })
 });
 
@@ -255,7 +255,7 @@ app.route('/feedback/:orig/merge/:dest').post((req, res) => {
                     });
                 } else {
                     res.send(202, {
-                        success: 'success'
+                        success: 'Success!'
                     })
                 }
             });
@@ -306,7 +306,7 @@ app.route('/feedback/:id/status').post((req, res) => {
                     });
                 } else {
                     res.send(202, {
-                        success: 'success'
+                        success: 'Success!'
                     })
                 }
             });
