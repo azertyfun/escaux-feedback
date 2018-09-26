@@ -1,0 +1,23 @@
+<div ng-controller="addFeedbackController">
+  <div ng-if="!loggedIn">
+    <p>
+      Please <a href="#!/setUser">login</a>!
+    </p>
+  </div>
+  <form style="margin-top: 20px;" ng-if="loggedIn" ng-submit="submit()">
+    <table>
+      <tr>
+        <td><label for="score">Score (1-5)</label></td>
+        <td><input id="score" ng-model="form.score" type="number" min="1" max="5" style="height: 1.5em; width: 300px;" /></td>
+      </tr>
+      <tr>
+        <td><label for="statement">Statement</label></td>
+        <td><textarea id="statement" ng-model="form.statement" style="height: 300px; width: 300px;"></textarea></td>
+      </tr>
+      <tr>
+        <td><input type="submit" ng-disabled="buttonDisabled" value="Submit!" /></td>
+        <td>{{ status }}</td>
+      </tr>
+    </table>
+  </form>
+</div>

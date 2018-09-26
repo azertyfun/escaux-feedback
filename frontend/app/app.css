@@ -28,6 +28,10 @@ a:visited {
     color: #346f8E;
 }
 
+td {
+    padding: 5px;
+}
+
 /* =============
    Header
    ============= */
