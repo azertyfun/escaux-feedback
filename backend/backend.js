@@ -61,7 +61,7 @@ function post_feedback(req, res) {
                 'message': err
             });
         } else {
-            database.add_feedback(new database.Feedback(req.params['id'] === undefined ? null : parseInt(req.params['id']), req.body.user, req.body.statement, req.params['id'] === undefined ? req.body.score : null, database.FeedbackStatus.None, false), (err) => {
+            database.add_feedback(new database.Feedback(null, req.params['id'] === undefined ? null : parseInt(req.params['id']), req.body.user, req.body.statement, req.params['id'] === undefined ? req.body.score : null, null, database.FeedbackStatus.None, false), (err) => {
                 if (err !== null) {
                     res.send(500, {
                         'error': 'Could not post feedback',
