@@ -3,14 +3,20 @@
 angular.module('feedbackApp.addFeedback', ['ngRoute'])
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/addFeedback', {
-    templateUrl: '/add_feedback/add_feedback.html',
-    controller: 'addFeedbackController'
+  templateUrl: '/add_feedback/add_feedback.html',
+  controller: 'addFeedbackController'
   });
 }])
-.controller('addFeedbackController', function($scope, $http, $window) {
+.controller('addFeedbackController', function($scope, UserSettings, Feedback) {
   $scope.buttonDisabled = false;
   $scope.status = '';
-  $scope.loggedIn = window.localStorage.getItem('user') !== undefined;
+
+  UserSettings.get_auth().then((auth) => {
+    $scope.auth = auth;
+  }, (error) => {
+    $scope.status = `Could not fetch auth data: ${error}`;
+    $scope.buttonDisabled = true;
+  });
 
   $scope.form = {
     score: 5,
@@ -18,19 +24,14 @@ angular.module('feedbackApp.addFeedback', ['ngRoute'])
   };
 
   $scope.submit = () => {
-    $scope.status = 'Uploading...';
-    $scope.buttonDisabled = true;
+  $scope.status = 'Uploading...';
+  $scope.buttonDisabled = true;
 
-    let data = {
-      score: $scope.form.score,
-      statement: $scope.form.statement,
-      user: $window.localStorage.getItem('user'),
-    };
-    $http.post('http://127.0.0.1:8001/feedback/post', data, {}).then((response) => {
-      $scope.status = 'Success!';
-    }, (response) => {
-      $scope.status = `Error: ${response.data.error === undefined ? 'Unknown error' : response.data.error}`;
-      $scope.buttonDisabled = false;
-    });
+  Feedback.add_feedback($scope.form.statement, $scope.form.score).then(() => {
+    $scope.status = 'Success!';
+  }, (error) => {
+    $scope.status = `Error: ${error}`;
+    $scope.buttonDisabled = false;
+  });
   };
 });

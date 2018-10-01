@@ -299,7 +299,7 @@ app.route('/feedback/:id/status').post((req, res) => {
                 message: err
             });
         } else {
-            database.setStatus(req.params['id'], req.body.status, (err) => {
+            database.set_status(req.params['id'], req.body.status, (err) => {
                 if (err) {
                     res.send(400, {
                         error: err

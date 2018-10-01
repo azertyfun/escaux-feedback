@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="statusDialogTemplate">
   <div id="statusDialog">
-    <form ng-submit="setStatus(message)">
+    <form ng-submit="set_status(message)">
       <select ng-model="message.newStatus.value">
         <option value="0">None</option>
         <option value="1">Open</option>
@@ -14,32 +14,35 @@
 </script>
 
 <div ng-controller="homeController">
-  <h2>Feedback</h2>
+  <pre ng-if="errorMessage != ''">{{ errorMessage }}</pre>
 
-  <a href="#!/addFeedback">Add feedback</a>
+  <div ng-if="errorMessage == ''">
+    <h2>Feedback</h2>
 
-  <section class="feedback" ng-repeat="message in feedback">
-    <h3>
-      <img src="images/star_full.png" height="24"/>
-      <img src="images/star_{{ message.score > 1 ? 'full' : 'empty' }}.png" height="24"/>
-      <img src="images/star_{{ message.score > 2 ? 'full' : 'empty' }}.png" height="24"/>
-      <img src="images/star_{{ message.score > 3 ? 'full' : 'empty' }}.png" height="24"/>
-      <img src="images/star_{{ message.score > 4 ? 'full' : 'empty' }}.png" alt="{{ message.score }}/5 stars" height="24"/>
-      
-      {{ message.user }}'s feedback <span ng-if="loggedIn && productManager">(#{{ message.id }})</span>
-    </h3>
-    <h4>Status: {{ status(message) }} — Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }} <span ng-if="loggedIn">(<a href="javascript:void(0)" ng-click="vote(message, 1)">+1</a> - <a href="javascript:void(0)" ng-click="vote(message, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(message, -1)">-1</a>) {{ message.vote.status }}</span></h4>
-    <p>
-      {{ message.statement }}
-    </p>
+    <a href="#!/addFeedback">Add feedback</a>
 
-    <p style="font-size: 0.6em;">
-      <a href="#!/comments?id={{ message.id }}">Comments</a> <span ng-if="loggedIn && productManager">— <a href="javascript:void(0)" ng-click="merge(message)">Merge to...</a> — <a href="javascript:void(0)" ng-click="message.statusShowDialog = !message.statusShowDialog">Edit status</a> {{ message.merge.status }} {{ message.newStatus.status }}</span>
-    </p>
+    <section class="feedback" ng-repeat="message in feedback">
+      <h3>
+        <img src="images/star_full.png" height="24"/>
+        <img src="images/star_{{ message.score > 1 ? 'full' : 'empty' }}.png" height="24"/>
+        <img src="images/star_{{ message.score > 2 ? 'full' : 'empty' }}.png" height="24"/>
+        <img src="images/star_{{ message.score > 3 ? 'full' : 'empty' }}.png" height="24"/>
+        <img src="images/star_{{ message.score > 4 ? 'full' : 'empty' }}.png" alt="{{ message.score }}/5 stars" height="24"/>
+        
+        {{ message.user }}'s feedback <span ng-if="auth.user != '' && auth.productManager">(#{{ message.id }})</span>
+      </h3>
+      <h4>Status: {{ status(message) }} — Votes: {{ message.votes }} pt{{ (message.votes === 1 || message.votes === -1) ? '' : 's' }} <span ng-if="auth.user != ''">(<a href="javascript:void(0)" ng-click="vote(message, 1)">+1</a> - <a href="javascript:void(0)" ng-click="vote(message, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(message, -1)">-1</a>) {{ message.vote.status }}</span></h4>
+      <p>
+        {{ message.statement }}
+      </p>
 
-    <div ng-if="loggedIn && productManager && message.statusShowDialog" ng-include="'statusDialogTemplate'"></div>
+      <p style="font-size: 0.6em;">
+        <a href="#!/comments?id={{ message.id }}">Comments</a> <span ng-if="auth.user != '' && auth.productManager">— <a href="javascript:void(0)" ng-click="merge(message)">Merge to...</a> — <a href="javascript:void(0)" ng-click="message.statusShowDialog = !message.statusShowDialog">Edit status</a> {{ message.merge.status }} {{ message.newStatus.status }}</span>
+      </p>
 
-    <hr />
-  </section>
+      <div ng-if="auth.user != '' && auth.productManager && message.statusShowDialog" ng-include="'statusDialogTemplate'"></div>
 
+      <hr />
+    </section>
+  </div>
 </div>

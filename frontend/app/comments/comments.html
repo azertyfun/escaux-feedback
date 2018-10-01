@@ -1,7 +1,7 @@
 <script type="text/ng-template" id="replyTemplate">
-    <a ng-if="loggedIn" href="javascript:void(0)" ng-click="comment.reply.show = !comment.reply.show">Reply</a>
+    <a ng-if="auth.user != ''" href="javascript:void(0)" ng-click="comment.reply.show = !comment.reply.show">Reply</a>
 
-    <div ng-if="loggedIn && comment.reply.show">
+    <div ng-if="auth.user != '' && comment.reply.show">
       <form ng-submit="submit(comment)">
         <textarea ng-model="comment.reply.text"></textarea><br />
         <input type="submit" value="Submit!" ng-disabled="comment.reply.buttonDisabled || comment.reply.text === ''" /> {{ comment.reply.status }}
@@ -14,7 +14,7 @@
     <h3>
       {{ comment.user }}'s {{ comment.wasRoot ? 'similar feedback' : 'comment' }}
     </h3>
-    <h4>Votes: {{ comment.votes }} pt{{ (comment.votes === 1 || comment.votes === -1) ? '' : 's' }} <span ng-if="loggedIn">(<a href="javascript:void(0)" ng-click="vote(comment, 1)">+1</a> - <a href="javascript:void(0)" ng-click="vote(comment, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(comment, -1)">-1</a>) {{ comment.vote.status }}</span></h4>
+    <h4>Votes: {{ comment.votes }} pt{{ (comment.votes === 1 || comment.votes === -1) ? '' : 's' }} <span ng-if="auth.user != ''">(<a href="javascript:void(0)" ng-click="vote(comment, 1)">+1</a> - <a href="javascript:void(0)" ng-click="vote(comment, 0)">+0</a> - <a href="javascript:void(0)" ng-click="vote(comment, -1)">-1</a>) {{ comment.vote.status }}</span></h4>
     <p>
       {{ comment.statement }}
     </p>
@@ -29,20 +29,24 @@
 </script>
 
 <div ng-controller="commentsController">
-  <h3>
-    <img src="images/star_full.png" height="24"/>
-    <img src="images/star_{{ feedback.score > 1 ? 'full' : 'empty' }}.png" height="24"/>
-    <img src="images/star_{{ feedback.score > 2 ? 'full' : 'empty' }}.png" height="24"/>
-    <img src="images/star_{{ feedback.score > 3 ? 'full' : 'empty' }}.png" height="24"/>
-    <img src="images/star_{{ feedback.score > 4 ? 'full' : 'empty' }}.png" alt="{{ feedback.score }}/5 stars" height="24"/>
-    
-    {{ feedback.user }}'s feedback
-  </h3>
+  <pre ng-if="errorMessage != ''">{{ errorMessage }}</pre>
 
-  {{ feedback.statement }}
+  <div ng-if="errorMessage == ''">
+    <h3>
+      <img src="images/star_full.png" height="24"/>
+      <img src="images/star_{{ feedback.score > 1 ? 'full' : 'empty' }}.png" height="24"/>
+      <img src="images/star_{{ feedback.score > 2 ? 'full' : 'empty' }}.png" height="24"/>
+      <img src="images/star_{{ feedback.score > 3 ? 'full' : 'empty' }}.png" height="24"/>
+      <img src="images/star_{{ feedback.score > 4 ? 'full' : 'empty' }}.png" alt="{{ feedback.score }}/5 stars" height="24"/>
+      
+      {{ feedback.user }}'s feedback
+    </h3>
 
-  <div ng-include="'replyTemplate'"></div>
+    {{ feedback.statement }}
 
-  <div ng-repeat="comment in comments" ng-include="'commentTemplate'">
+    <div ng-include="'replyTemplate'"></div>
+
+    <div ng-repeat="comment in comments" ng-include="'commentTemplate'">
+    </div>
   </div>
 </div>

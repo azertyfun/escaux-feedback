@@ -333,7 +333,7 @@ exports.merge = (orig, dest, callback) => {
     })
 };
 
-exports.setStatus = (id, status, callback) => {
+exports.set_status = (id, status, callback) => {
     this.get_feedback(id, (err, feedback) => {
         if (err) {
             return callback(err.message);
